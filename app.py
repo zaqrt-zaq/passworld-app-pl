@@ -6,7 +6,6 @@ from python_translator import Translator
 
 DIS='offline_fast_hashing_1e10_per_second'
 TRT='crack_times_seconds'
-is_first=True
 
 def sec2str(seconds):
 	minute = 60
@@ -49,33 +48,31 @@ def topl(text):
 
 def fun():
 	haslo = ent1.get()
-
 	if haslo:
+		lbl_result.config(text="")
 		res = zxcvbn(haslo)
 		seconds = math.ceil(int(res[TRT][DIS]))
+
 		message = "czas potrzebny na złamanie: "+str(sec2str(seconds))
-		czas1=Label(win, text= message)
-		czas1.place(x=30,y=140)
+		czas1.config(text= message)
+
 		message = "oraz metodą wolną: "+str(sec2str(seconds*1000))
-		czas2=Label(win, text= message)
-		czas2.place(x=30,y=160)
+		czas2.config(text= message)
+
 		if (res['feedback']['suggestions']):
 			message = "sugestie : "+topl(str(res['feedback']['suggestions']))
-			fedback=Label(win, text = message, wraplength=350, justify="left")
-			fedback.place(x=30,y=180)
+			fedback.config(text = message)
 		if seconds<60*60:
 			message1 = "hasło słabe, należy zmienić jak najszybciej"
-			sumary=Label(win, text = message1, wraplength=350, justify="left", fg="red")
+			sumary.config(text = message1, fg="red")
 		elif seconds>60*60*24*31:
 			message1 = "hasło bardzo dobre. nada się do ataków bezpośrednich"
-			sumary=Label(win, text = message1, wraplength=350, justify="left", fg="green")
+			sumary.config(text = message1, fg="green")
 		else:
 			message1 = "hasło umiarkowane, może zabespieczać mniej ważne dane(odporne na ataki online)"
-			sumary=Label(win, text = message1, wraplength=350, justify="left", fg="orange")
-		sumary.place(x=50,y=250)
+			sumary.config(text = message1,fg="orange")
 	else:
-		lbl_result = Label(master=win, text="hasło nie może być puste!!", fg="red")
-		lbl_result.place(x=120,y=120)
+		lbl_result.config(text="hasło nie może być puste!!")
 
 win = Tk()
 win.title('Pass calc')
@@ -88,4 +85,19 @@ ent1.place(x=180,y=70)
 
 btn=Button(win,text="Oblicz", width=4,height=1,command=fun)
 btn.place(x=40,y=100) 
+
+sumary=Label(win, text ="", wraplength=350, justify="left")
+sumary.place(x=50,y=350)
+
+czas1=Label(win, text="")
+czas1.place(x=30,y=140)
+
+czas2=Label(win, text="")
+czas2.place(x=30,y=160)
+
+fedback=Label(win, text = "", wraplength=350, justify="left")
+fedback.place(x=30,y=180)
+
+lbl_result = Label(master=win, text="", fg="red")
+lbl_result.place(x=120,y=120)
 win.mainloop()
