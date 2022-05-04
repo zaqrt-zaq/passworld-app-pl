@@ -53,20 +53,20 @@ def fun():
 		res = zxcvbn(haslo)
 		seconds = math.ceil(int(res[TRT][DIS]))
 
-		message = "czas potrzebny na złamanie: "+str(sec2str(seconds))
+		message = "Czas potrzebny na złamanie: "+str(sec2str(seconds))
 		czas1.config(text= message)
 
-		message = "oraz metodą wolną: "+str(sec2str(seconds*1000))
+		message = "Oraz metodą wolną: "+str(sec2str(seconds*1000))
 		czas2.config(text= message)
 
 		if (res['feedback']['suggestions']):
-			message = "sugestie : "+topl(str(res['feedback']['suggestions']))
+			message = "Sugestie : "+topl(str(res['feedback']['suggestions']))
 			fedback.config(text = message)
 		if seconds<60*60:
 			message1 = "hasło słabe, należy zmienić jak najszybciej"
 			sumary.config(text = message1, fg="red")
 		elif seconds>60*60*24*31:
-			message1 = "hasło bardzo dobre. nada się do ataków bezpośrednich"
+			message1 = "Hasło bardzo dobre. nada się do ataków bezpośrednich"
 			sumary.config(text = message1, fg="green")
 		else:
 			message1 = "hasło umiarkowane, może zabespieczać mniej ważne dane(odporne na ataki online)"
