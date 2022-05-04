@@ -8,6 +8,6 @@ użyte biblioteki znajdują sie w pliku requirments.txt
 program tworzony na pythonie 3.10.4
 
 by uruchomic program należy wpierw pobrać potrzebne biblioteki
-  
+``` 
   pip install -r requirments.txt
-
+```
