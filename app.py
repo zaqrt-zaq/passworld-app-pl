@@ -1,4 +1,5 @@
 #biblioteki potrzebne do projektu
+from cProfile import label
 from tkinter import *
 from zxcvbn import zxcvbn
 import math
@@ -67,11 +68,14 @@ def fun():
 			fedback.config(text = sugestie)
 		if (res['sequence']):
 			slowa = "\n"+"znalezione sekfencje: "
+			lp_br=0
 			for i in range(len(res['sequence'])):
 				if i ==4:
 					slowa+="\nitd.."
 					break
-				slowa+="\n"+"wzorzec: "+res['sequence'][i]['pattern']+" -> "+res['sequence'][i]['token']
+				slowa+="\n"+res['sequence'][i]['pattern']+" -> "+res['sequence'][i]['token']
+				if (res['sequence'][i]['pattern']=='bruteforce'):
+					lp_br+=1
 			l_slowa.config(text = slowa)
 		if seconds<60*60:
 			message1 = "hasło słabe, należy zmienić jak najszybciej"
@@ -82,6 +86,10 @@ def fun():
 		else:
 			message1 = "hasło umiarkowane, może zabespieczać mniej ważne dane(odporne na ataki online)"
 			sumary.config(text = message1,fg="orange")
+		if (lp_br>0):
+			typ.config(text="Typ ataku brute-force")
+		else:
+			typ.config(text="Typ ataku słownikowy lub mięszany")
 	else:
 		lbl_result.config(text="hasło nie może być puste!!")
 
@@ -90,28 +98,31 @@ win.title('Pass calc')
 frame = Frame(master=win, width=400, height=500)
 frame.pack()
 
-Label(win, text='podaj swoje hasło: ').place(x=70,y=70)
+Label(win, text='podaj swoje hasło: ').place(x=70,y=50)
 ent1 = Entry(win) 
-ent1.place(x=180,y=70)
+ent1.place(x=180,y=50)
 
 btn=Button(win,text="Oblicz", width=4,height=1,command=fun)
-btn.place(x=40,y=100) 
-
-czas1=Label(win, text="")
-czas1.place(x=30,y=140)
-
-czas2=Label(win, text="")
-czas2.place(x=30,y=160)
-
-fedback=Label(win, text = "", wraplength=350, justify="left")
-fedback.place(x=30,y=200)
+btn.place(x=40,y=80) 
 
 l_slowa=Label(win, text = "", wraplength=350, justify="left")
-l_slowa.place(x=30,y=260)
+l_slowa.place(x=30,y=110)
+
+typ=Label(win,text = "", fg="blue")
+typ.place(x=30, y=240)
+
+czas1=Label(win, text="")
+czas1.place(x=30,y=260)
+
+czas2=Label(win, text="")
+czas2.place(x=30,y=280)
+
+fedback=Label(win, text = "", wraplength=350, justify="left")
+fedback.place(x=30,y=320)
 
 sumary=Label(win, text ="", wraplength=350, justify="left")
 sumary.place(x=50,y=450)
 
 lbl_result = Label(master=win, text="", fg="red")
-lbl_result.place(x=120,y=120)
+lbl_result.place(x=120,y=80)
 win.mainloop()
