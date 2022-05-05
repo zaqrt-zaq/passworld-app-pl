@@ -40,18 +40,20 @@ def sec2str(seconds):
 	else:
 		return ans[11]+str( math.ceil(seconds/year))+" lat)"
 
-def topl(text):
+def topl(lista):
 	translator = Translator()
-	text=str(text)
-	result = str(translator.translate(text, "polish", "english"))
-	return 	"\n"+result[2:-3].replace(',',"\n").replace("'","")
+	if lista:
+		result=""
+		for i in range(len(lista)):
+			result += str(translator.translate(lista[i], "polish", "english"))+"\n"
+		return 	str(result)
 
 def fun():
 	haslo = ent1.get()
 	if haslo:
 		lbl_result.config(text="")
 		res = zxcvbn(haslo)
-		seconds = math.ceil(int(res[TRT][DIS]))
+		seconds = math.ceil(int(res[TRT][DIS]))*50
 
 		message = "Czas potrzebny na złamanie: "+str(sec2str(seconds))
 		czas1.config(text= message)
@@ -60,8 +62,17 @@ def fun():
 		czas2.config(text= message)
 
 		if (res['feedback']['suggestions']):
-			message = "Sugestie : "+topl(str(res['feedback']['suggestions']))
-			fedback.config(text = message)
+			sugestie ="Sugestie : \n"
+			sugestie += topl(res['feedback']['suggestions'])
+			fedback.config(text = sugestie)
+		if (res['sequence']):
+			slowa = "\n"+"znalezione sekfencje: "
+			for i in range(len(res['sequence'])):
+				if i ==4:
+					slowa+="\nitd.."
+					break
+				slowa+="\n"+"wzorzec: "+res['sequence'][i]['pattern']+" -> "+res['sequence'][i]['token']
+			l_slowa.config(text = slowa)
 		if seconds<60*60:
 			message1 = "hasło słabe, należy zmienić jak najszybciej"
 			sumary.config(text = message1, fg="red")
@@ -76,7 +87,7 @@ def fun():
 
 win = Tk()
 win.title('Pass calc')
-frame = Frame(master=win, width=400, height=400)
+frame = Frame(master=win, width=400, height=500)
 frame.pack()
 
 Label(win, text='podaj swoje hasło: ').place(x=70,y=70)
@@ -86,9 +97,6 @@ ent1.place(x=180,y=70)
 btn=Button(win,text="Oblicz", width=4,height=1,command=fun)
 btn.place(x=40,y=100) 
 
-sumary=Label(win, text ="", wraplength=350, justify="left")
-sumary.place(x=50,y=350)
-
 czas1=Label(win, text="")
 czas1.place(x=30,y=140)
 
@@ -96,7 +104,13 @@ czas2=Label(win, text="")
 czas2.place(x=30,y=160)
 
 fedback=Label(win, text = "", wraplength=350, justify="left")
-fedback.place(x=30,y=180)
+fedback.place(x=30,y=200)
+
+l_slowa=Label(win, text = "", wraplength=350, justify="left")
+l_slowa.place(x=30,y=260)
+
+sumary=Label(win, text ="", wraplength=350, justify="left")
+sumary.place(x=50,y=450)
 
 lbl_result = Label(master=win, text="", fg="red")
 lbl_result.place(x=120,y=120)
