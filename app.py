@@ -2,7 +2,7 @@
 from cProfile import label
 from tkinter import *
 from zxcvbn import zxcvbn
-import math
+from math import ceil
 from python_translator import Translator
 
 DIS='offline_fast_hashing_1e10_per_second'
@@ -15,31 +15,47 @@ def sec2str(seconds):
 	month = day * 31
 	year = month * 12
 	century = year * 100
-	ans=["mniej niż sekunde","minej niż minutę", " minut" ,"godzinę" , " godzin", "dzień"," dni","miesiąc"," miesięcy"," rok"," lat","długo ("]
+	ans=["mniej niż sekunde","minej niż minutę", " minut" ,"godzinę" , " godzin", "dzień"," dni","miesiąc"," miesięcy"," rok"," lat","długo ("," minuty"," miesiące"," lata"]
 	if seconds < 1:
 		return ans[0]
 	elif seconds < minute:
 		return ans[1]
 	elif seconds < hour:
-		return str(math.ceil(seconds/minute))+ans[2]
+		time=ceil(seconds/minute)
+		if (time<=4):
+			return str(time)+ans[12]
+		else:
+			return str(time)+ans[2]
 	elif seconds == hour:
 		return ans[3]
 	elif seconds < day:
-		return str(math.ceil(seconds/hour))+ans[4]
+		time=ceil(seconds/hour)
+		if (time<=4):
+			return str(time)+ans[13]
+		else:
+			return str(time)+ans[4]
 	elif seconds == day:
 		return ans[5]
 	elif seconds < month:
-		return str( math.ceil(seconds/day))+ans[6]
+		time=ceil(seconds/day)
+		if (time<=4):
+			return str(time)+ans[14]
+		else:
+			return str(time)+ans[6]
 	elif seconds == month:
 		return ans[7]
 	elif seconds < year:
-		return str( math.ceil(seconds/month))+ans[8]
+		return str( ceil(seconds/month))+ans[8]
 	elif seconds == year:
 		return ans[9]
 	elif seconds < century:
-		return str( math.ceil(seconds/year))+ans[10]
+		time=ceil(seconds/year)
+		if (time<=4):
+			return str(time)+ans[15]
+		else:
+			return str(time)+ans[10]
 	else:
-		return ans[11]+str( math.ceil(seconds/year))+" lat)"
+		return ans[11]+str( ceil(seconds/year))+" lat)"
 
 def topl(lista):
 	translator = Translator()
@@ -54,7 +70,7 @@ def fun():
 	if haslo:
 		lbl_result.config(text="")
 		res = zxcvbn(haslo)
-		seconds = math.ceil(int(res[TRT][DIS]))*50
+		seconds = ceil(int(res[TRT][DIS]))*50
 
 		message = "Czas potrzebny na złamanie: "+str(sec2str(seconds))
 		czas1.config(text= message)
