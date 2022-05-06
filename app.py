@@ -93,36 +93,37 @@ def fun():
 	else:
 		lbl_result.config(text="hasło nie może być puste!!")
 
-win = Tk()
-win.title('Pass calc')
-frame = Frame(master=win, width=400, height=500)
-frame.pack()
+if __name__=='__main__':
+	win = Tk()
+	win.title('Pass calc')
+	frame = Frame(master=win, width=400, height=500)
+	frame.pack()
 
-Label(win, text='podaj swoje hasło: ').place(x=70,y=50)
-ent1 = Entry(win) 
-ent1.place(x=180,y=50)
+	Label(win, text='podaj swoje hasło: ').place(x=70,y=50)
+	ent1 = Entry(win) 
+	ent1.place(x=180,y=50)
 
-btn=Button(win,text="Oblicz", width=4,height=1,command=fun)
-btn.place(x=40,y=80) 
+	btn=Button(win,text="Oblicz", width=4,height=1,command=fun)
+	btn.place(x=40,y=80) 
 
-l_slowa=Label(win, text = "", wraplength=350, justify="left")
-l_slowa.place(x=30,y=110)
+	l_slowa=Label(win, text = "", wraplength=350, justify="left")
+	l_slowa.place(x=30,y=110)
 
-typ=Label(win,text = "", fg="blue")
-typ.place(x=30, y=240)
+	typ=Label(win,text = "", fg="blue")
+	typ.place(x=30, y=240)
 
-czas1=Label(win, text="")
-czas1.place(x=30,y=260)
+	czas1=Label(win, text="")
+	czas1.place(x=30,y=260)
 
-czas2=Label(win, text="")
-czas2.place(x=30,y=280)
+	czas2=Label(win, text="")
+	czas2.place(x=30,y=280)
 
-fedback=Label(win, text = "", wraplength=350, justify="left")
-fedback.place(x=30,y=320)
+	fedback=Label(win, text = "", wraplength=350, justify="left")
+	fedback.place(x=30,y=320)
 
-sumary=Label(win, text ="", wraplength=350, justify="left")
-sumary.place(x=50,y=450)
+	sumary=Label(win, text ="", wraplength=350, justify="left")
+	sumary.place(x=50,y=450)
 
-lbl_result = Label(master=win, text="", fg="red")
-lbl_result.place(x=120,y=80)
-win.mainloop()
+	lbl_result = Label(master=win, text="", fg="red")
+	lbl_result.place(x=120,y=80)
+	win.mainloop()
