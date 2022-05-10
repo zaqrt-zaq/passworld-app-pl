@@ -67,47 +67,46 @@ def topl(lista):
 
 def fun():
 	haslo = ent1.get()
-	if haslo:
-		lbl_result.config(text="")
-		res = zxcvbn(haslo)
-		seconds = ceil(int(res[TRT][DIS]))*50
-
-		message = "Czas potrzebny na złamanie: "+str(sec2str(seconds))
-		czas1.config(text= message)
-
-		message = "Oraz metodą wolną: "+str(sec2str(seconds*1000))
-		czas2.config(text= message)
-
-		if (res['feedback']['suggestions']):
-			sugestie ="Sugestie : \n"
-			sugestie += topl(res['feedback']['suggestions'])
-			fedback.config(text = sugestie)
-		if (res['sequence']):
-			slowa = "\n"+"znalezione sekfencje: "
-			lp_br=0
-			for i in range(len(res['sequence'])):
-				if i ==4:
-					slowa+="\nitd.."
-					break
-				slowa+="\n"+res['sequence'][i]['pattern']+" -> "+res['sequence'][i]['token']
-				if (res['sequence'][i]['pattern']=='bruteforce'):
-					lp_br+=1
-			l_slowa.config(text = slowa)
-		if seconds<60*60:
-			message1 = "hasło słabe, należy zmienić jak najszybciej"
-			sumary.config(text = message1, fg="red")
-		elif seconds>60*60*24*31:
-			message1 = "Hasło bardzo dobre. nada się do ataków bezpośrednich"
-			sumary.config(text = message1, fg="green")
-		else:
-			message1 = "hasło umiarkowane, może zabespieczać mniej ważne dane(odporne na ataki online)"
-			sumary.config(text = message1,fg="orange")
-		if (lp_br>0):
-			typ.config(text="Typ ataku brute-force")
-		else:
-			typ.config(text="Typ ataku słownikowy lub mięszany")
-	else:
+	if not haslo:
 		lbl_result.config(text="hasło nie może być puste!!")
+		return
+	lbl_result.config(text="")
+	res = zxcvbn(haslo)
+	seconds = ceil(int(res[TRT][DIS]))*50
+
+	message = "Czas potrzebny na złamanie: "+str(sec2str(seconds))
+	czas1.config(text= message)
+
+	message = "Oraz metodą wolną: "+str(sec2str(seconds*1000))
+	czas2.config(text= message)
+
+	if (res['feedback']['suggestions']):
+		sugestie ="Sugestie : \n"
+		sugestie += topl(res['feedback']['suggestions'])
+		fedback.config(text = sugestie)
+	if (res['sequence']):
+		slowa = "\n"+"znalezione sekfencje: "
+		for i in range(len(res['sequence'])):
+			if i ==4:
+				slowa+="\nitd.."
+				break
+			slowa+="\n"+res['sequence'][i]['pattern']+" -> "+res['sequence'][i]['token']
+			if (res['sequence'][i]['pattern']=='bruteforce'):
+				lp_br=True
+		l_slowa.config(text = slowa)
+	if seconds<60*60:
+		message1 = "hasło słabe, należy zmienić jak najszybciej"
+		sumary.config(text = message1, fg="red")
+	elif seconds>60*60*24*31:
+		message1 = "Hasło bardzo dobre. nada się do ataków bezpośrednich"
+		sumary.config(text = message1, fg="green")
+	else:
+		message1 = "hasło umiarkowane, może zabespieczać mniej ważne dane(odporne na ataki online)"
+		sumary.config(text = message1,fg="orange")
+	if (lp_br):
+		typ.config(text="Typ ataku brute-force")
+	else:
+		typ.config(text="Typ ataku słownikowy lub mięszany")
 
 if __name__=='__main__':
 	win = Tk()
