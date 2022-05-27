@@ -1,5 +1,4 @@
 bs4 
 ts
-python-translator
 requests
 zxcvbn
