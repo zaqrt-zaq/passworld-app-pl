@@ -1,89 +1,46 @@
 #biblioteki potrzebne do projektu
 from cProfile import label
 from tkinter import *
-from zxcvbn import zxcvbn
-from math import ceil
-from python_translator import Translator
+import sys
+
+sys.path.insert(0, './zxcvbn')
+from zxcvbn_pl.zxcvbn import zxcvbn
 
 DIS='offline_fast_hashing_1e10_per_second'
-TRT='crack_times_seconds'
+DIE='offline_slow_hashing_1e4_per_second'
+TRT='crack_times_display'
 
-def sec2str(seconds):
-	minute = 60
-	hour = minute * 60
-	day = hour * 24
-	month = day * 31
-	year = month * 12
-	century = year * 100
-	ans=["mniej niż sekunde","minej niż minutę", " minut" ,"godzinę" , " godzin", "dzień"," dni","miesiąc"," miesięcy"," rok"," lat","długo ("," minuty"," miesiące"," lata"]
-	if seconds < 1:
-		return ans[0]
-	elif seconds < minute:
-		return ans[1]
-	elif seconds < hour:
-		time=ceil(seconds/minute)
-		if (time<=4):
-			return str(time)+ans[12]
-		else:
-			return str(time)+ans[2]
-	elif seconds == hour:
-		return ans[3]
-	elif seconds < day:
-		time=ceil(seconds/hour)
-		if (time<=4):
-			return str(time)+ans[13]
-		else:
-			return str(time)+ans[4]
-	elif seconds == day:
-		return ans[5]
-	elif seconds < month:
-		time=ceil(seconds/day)
-		if (time<=4):
-			return str(time)+ans[14]
-		else:
-			return str(time)+ans[6]
-	elif seconds == month:
-		return ans[7]
-	elif seconds < year:
-		return str( ceil(seconds/month))+ans[8]
-	elif seconds == year:
-		return ans[9]
-	elif seconds < century:
-		time=ceil(seconds/year)
-		if (time<=4):
-			return str(time)+ans[15]
-		else:
-			return str(time)+ans[10]
-	else:
-		return ans[11]+str( ceil(seconds/year))+" lat)"
-
-def topl(lista):
-	translator = Translator()
-	if lista:
-		result=""
-		for i in range(len(lista)):
-			result += str(translator.translate(lista[i], "polish", "english"))+"\n"
-		return 	str(result)
+def clear():
+	lbl_result.config(text="")
+	warn.config(text="")
+	fedback.config(text="")
 
 def fun():
 	haslo = ent1.get()
 	if not haslo:
 		lbl_result.config(text="hasło nie może być puste!!")
 		return
-	lbl_result.config(text="")
+	clear()
 	res = zxcvbn(haslo)
-	seconds = ceil(int(res[TRT][DIS]))*50
 
-	message = "Czas potrzebny na złamanie: "+str(sec2str(seconds))
+	message = "Czas potrzebny na złamanie: "+res[TRT][DIS]
 	czas1.config(text= message)
 
-	message = "Oraz metodą wolną: "+str(sec2str(seconds*1000))
+	message = "Oraz metodą wolną: "+res[TRT][DIE]
 	czas2.config(text= message)
 
+	lp_br=False
+	
 	if (res['feedback']['suggestions']):
 		sugestie ="Sugestie : \n"
-		sugestie += topl(res['feedback']['suggestions'])
+		for j in range(len(res['feedback']['suggestions'])):
+			sugestie += res['feedback']['suggestions'][j]+"\n"
 		fedback.config(text = sugestie)
+	
+	if (res['feedback']['warning']):
+		sugestie ="Uwaga: \n"+res['feedback']['warning']
+		warn.config(text = sugestie)
+	
 	if (res['sequence']):
 		slowa = "\n"+"znalezione sekfencje: "
 		for i in range(len(res['sequence'])):
@@ -94,10 +51,11 @@ def fun():
 			if (res['sequence'][i]['pattern']=='bruteforce'):
 				lp_br=True
 		l_slowa.config(text = slowa)
-	if seconds<60*60:
+	
+	if res['score']<2:
 		message1 = "hasło słabe, należy zmienić jak najszybciej"
 		sumary.config(text = message1, fg="red")
-	elif seconds>60*60*24*31:
+	elif res['score']==4:
 		message1 = "Hasło bardzo dobre. nada się do ataków bezpośrednich"
 		sumary.config(text = message1, fg="green")
 	else:
@@ -111,7 +69,7 @@ def fun():
 if __name__=='__main__':
 	win = Tk()
 	win.title('Pass calc')
-	frame = Frame(master=win, width=400, height=500)
+	frame = Frame(master=win, width=550, height=500)
 	frame.pack()
 
 	Label(win, text='podaj swoje hasło: ').place(x=70,y=50)
@@ -125,16 +83,19 @@ if __name__=='__main__':
 	l_slowa.place(x=30,y=110)
 
 	typ=Label(win,text = "", fg="blue")
-	typ.place(x=30, y=240)
+	typ.place(x=220,y=120)
 
 	czas1=Label(win, text="")
-	czas1.place(x=30,y=260)
+	czas1.place(x=220,y=140)
 
 	czas2=Label(win, text="")
-	czas2.place(x=30,y=280)
+	czas2.place(x=220,y=160)
 
 	fedback=Label(win, text = "", wraplength=350, justify="left")
-	fedback.place(x=30,y=320)
+	fedback.place(x=30, y=240)
+
+	warn=Label(win, text="", wraplength=350, justify="left")
+	warn.place(x=30, y=360)
 
 	sumary=Label(win, text ="", wraplength=350, justify="left")
 	sumary.place(x=50,y=450)
